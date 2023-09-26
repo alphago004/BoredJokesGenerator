@@ -1,22 +1,37 @@
-import './App.css';
+import React, { useState } from 'react';
 
 function App() {
+  const [output, setOutput] = useState("");
+
+  const getBoredActivity = async () => {
+    try {
+      let response = await fetch('https://www.boredapi.com/api/activity/');
+      let data = await response.json();
+      setOutput(data.activity);
+    } catch (error) {
+      setOutput("Error fetching activity.");
+    }
+  }
+
+  const getJoke = async () => {
+    try {
+      let response = await fetch('https://v2.jokeapi.dev/joke/Any');
+      let data = await response.json();
+      if (data.setup && data.delivery) {
+        setOutput(data.setup + " " + data.delivery);
+      } else {
+        setOutput(data.joke || "Error fetching joke.");
+      }
+    } catch (error) {
+      setOutput("Error fetching joke.");
+    }
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={""} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <button onClick={getBoredActivity}>Get Bored Activity</button>
+      <button onClick={getJoke}>Get Joke</button>
+      <textarea value={output} readOnly />
     </div>
   );
 }
