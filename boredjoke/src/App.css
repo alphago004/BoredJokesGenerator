@@ -1,0 +1,5 @@
+.small-flag {
+    width: 50px;  /* Or whatever size you want */
+    height: auto; /* Keep aspect ratio */
+    margin: 5px;  /* Some margin around the flag */
+}
