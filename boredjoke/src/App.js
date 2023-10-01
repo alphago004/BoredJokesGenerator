@@ -9,9 +9,23 @@ function App() {
   const [isCorrect, setIsCorrect] = useState(null);
   const [score, setScore] = useState(0);
 
+
+  const currentScore = score;
+  const highestScore = localStorage.getItem('highestScore') ? parseInt(localStorage.getItem('highestScore')) : 0;
+
+if (currentScore > highestScore) {
+    localStorage.setItem('highestScore', currentScore.toString());
+}
+
+
   const getCountryInfo = async () => {
     try {
       const response = await fetch("http://localhost:3001/country");
+      
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
       const data = await response.json();
       setCountry(data);
       setIsCorrect(null); // Reset the answer state
@@ -37,16 +51,14 @@ function App() {
     if (correct) {
       setScore((prevScore) => prevScore + 2);
     } else {
-      setScore((prevScore) => prevScore - 1);
+      setScore((prevScore) => 0);
     }
   };
 
   return (
     <div className="App">
-      <div>
-        {" "}
-        {/* This div will contain your quiz content */}
-        {country ? (
+      <div> 
+        {country && country.name && country.flag ? (
           <div>
             <h3>What's the capital of {country.name}?</h3>
             <img
@@ -54,31 +66,35 @@ function App() {
               className="small-flag"
               alt={`${country.name} flag`}
             />
-            {country.options.map((option, index) => (
-              <button
-                key={index}
-                onClick={() => handleAnswer(option)}
-                className={`option ${
-                  selectedAnswer === option
-                    ? option === country.capital
-                      ? "correct"
-                      : "incorrect"
-                    : ""
-                }`}
-                style={{
-                  backgroundColor:
+            {country.options && country.options.length > 0 ? (
+              country.options.map((option, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleAnswer(option)}
+                  className={`option ${
                     selectedAnswer === option
                       ? option === country.capital
-                        ? "green"
-                        : "red"
-                      : "",
-                }}
-                disabled={!!selectedAnswer} // disable the button if an answer has been selected
-              >
-                {option}
-              </button>
-            ))}
-
+                        ? "correct"
+                        : "incorrect"
+                      : ""
+                  }`}
+                  style={{
+                    backgroundColor:
+                      selectedAnswer === option
+                        ? option === country.capital
+                          ? "green"
+                          : "red"
+                        : "",
+                  }}
+                  disabled={!!selectedAnswer}
+                >
+                  {option}
+                </button>
+              ))
+            ) : (
+              <p>No options available.</p>
+            )}
+  
             {isCorrect === false && (
               <div className="correct-answer-section">
                 <p>
@@ -86,7 +102,7 @@ function App() {
                 </p>
               </div>
             )}
-
+  
             {isCorrect !== null && (
               <div className="feedback-section">
                 {isCorrect ? (
@@ -103,13 +119,16 @@ function App() {
         )}
       </div>
       <div className="score-container">
-        {" "}
-        {/* This div will display the score */}
         <h3>Score</h3>
         <p>{score}</p>
+        <div className="score-container">
+          <h3>Highest Score</h3>
+          <p>{highestScore}</p>
+        </div>
       </div>
     </div>
   );
-}
+  
+  }
 
 export default App;

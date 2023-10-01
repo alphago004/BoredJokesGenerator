@@ -28,7 +28,7 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    transition: all 0.3s; /* Enhanced for shadow and translate */
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
     box-shadow: none;
     outline: none; 
 }
@@ -38,7 +38,6 @@
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
     /*transform: translateY(-2px);  /* Lift effect */
     color: black;
-    font-weight: bolder; 
 }
 
 .App .question-section {
@@ -65,7 +64,7 @@
 .App button.option:hover {
     background-color: #666;  /* Darker shade for better contrast */
     box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
-    /**transform: translateY(-1px);  /* Lift effect */
+    transition: all 0.2s cubic-bezier(0.68, -0.55, 0.27, 1.55);
 }
 
 .App button.option.selected-option.correct {
