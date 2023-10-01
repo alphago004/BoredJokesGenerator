@@ -39,22 +39,33 @@ app.get('/country', async (req, res) => {
         const response = await axios.get('https://restcountries.com/v3.1/all');
         const countries = response.data;
 
-        // Extract required details for the first 10 countries
-        const firstTenCountriesInfo = countries.slice(0, 10).map(country => {
-            return {
-                name: country.name.common,
-                capital: country.capital ? country.capital[0] : 'N/A', // Some countries might not have a capital
-                language: Object.values(country.languages)[0],  // Extracting the first language, as countries can have multiple languages
-                flag: country.flags.svg 
-            };
-        });
+        // Get a random country for the question
+        const randomCountry = countries[Math.floor(Math.random() * countries.length)];
+        const correctOption = randomCountry.capital ? randomCountry.capital[0] : 'N/A';
+        
+        // Get 3 random countries for the wrong options (ensure they're not the same as the chosen country)
+        let wrongOptions = [];
+        while (wrongOptions.length < 3) {
+            const wrongCountry = countries[Math.floor(Math.random() * countries.length)];
+            if (wrongCountry.name.common !== randomCountry.name.common && wrongOptions.indexOf(wrongCountry.capital[0]) === -1) {
+                wrongOptions.push(wrongCountry.capital[0] || 'N/A');
+            }
+        }
 
-        res.json(firstTenCountriesInfo);
+        const countryInfo = {
+            name: randomCountry.name.common,
+            capital: correctOption,
+            flag: randomCountry.flags.svg,
+            options: [correctOption, ...wrongOptions].sort(() => Math.random() - 0.5) // Shuffle the options
+        };
+
+        res.json(countryInfo);
         
     } catch (error) {
-        res.status(500).json({ error: "Hold on!! Take a breath!" });
+        res.status(500).json({ error: "Error fetching country info." });
     }
 });
+
 
 
 app.listen(3001, '0.0.0.0', () => {

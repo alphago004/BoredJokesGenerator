@@ -1,78 +1,115 @@
-import './App.css';
+import "./App.css";
 
-import React, { useState } from 'react';
-import { MdSentimentVeryDissatisfied, MdInsertEmoticon } from 'react-icons/md'; // Importing Icons
+import React, { useState } from "react";
+import { MdSentimentVeryDissatisfied, MdInsertEmoticon } from "react-icons/md"; // Importing Icons
 
 function App() {
-    const [output, setOutput] = useState("");
-const [countries, setCountries] = useState([]);  // Ensure this is declared
-const [displayMode, setDisplayMode] = useState('');  // Ensure this is declared as well
+  const [country, setCountry] = useState(null);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [isCorrect, setIsCorrect] = useState(null);
+  const [score, setScore] = useState(0);
 
-
-    const getBoredActivity = async () => {
-        try {
-            let response = await fetch('http://localhost:3001/bored');
-            let data = await response.json();
-            setOutput(data.activity);
-        } catch (error) {
-            setOutput("Error fetching activity.");
-        }
+  const getCountryInfo = async () => {
+    try {
+      const response = await fetch("http://localhost:3001/country");
+      const data = await response.json();
+      setCountry(data);
+      setIsCorrect(null); // Reset the answer state
+    } catch (error) {
+      console.log("Error fetching country info.");
     }
+  };
 
-    const getJoke = async () => {
-        try {
-            let response = await fetch('http://localhost:3001/joke');
-            let data = await response.json();
-            if (data.setup && data.delivery) {
-                setOutput("Category: " +  data.category + "\n\n" + data.setup + "\n\n" + "=> "+data.delivery + "\n\n" );
-            } else {
-                setOutput(data.joke || "Error fetching joke.");
-            }
-        } catch (error) {
-            setOutput("Hold on!! Take a breath!");
-        }
+  const loadNewQuestion = () => {
+    setSelectedAnswer(null);
+    setIsCorrect(null);
+    getCountryInfo();
+  };
+
+  const handleAnswer = (answer) => {
+    if (selectedAnswer) return; // If an answer is already selected, exit the function
+
+    setSelectedAnswer(answer); // Set the selected answer
+
+    const correct = answer === country.capital;
+    setIsCorrect(correct);
+
+    if (correct) {
+      setScore((prevScore) => prevScore + 2);
+    } else {
+      setScore((prevScore) => prevScore - 1);
     }
+  };
 
-    const getCountryInfo = async () => {
-        try {
-            const response = await fetch('http://localhost:3001/country');
-            const data = await response.json();
-            setCountries(data);
-            setDisplayMode('country');
-        } catch (error) {
-            setOutput("Error fetching country info.");
-        }
-    }
+  return (
+    <div className="App">
+      <div>
+        {" "}
+        {/* This div will contain your quiz content */}
+        {country ? (
+          <div>
+            <h3>What's the capital of {country.name}?</h3>
+            <img
+              src={country.flag}
+              className="small-flag"
+              alt={`${country.name} flag`}
+            />
+            {country.options.map((option, index) => (
+              <button
+                key={index}
+                onClick={() => handleAnswer(option)}
+                className={`option ${
+                  selectedAnswer === option
+                    ? option === country.capital
+                      ? "correct"
+                      : "incorrect"
+                    : ""
+                }`}
+                style={{
+                  backgroundColor:
+                    selectedAnswer === option
+                      ? option === country.capital
+                        ? "green"
+                        : "red"
+                      : "",
+                }}
+                disabled={!!selectedAnswer} // disable the button if an answer has been selected
+              >
+                {option}
+              </button>
+            ))}
 
-    return (
-        <div className="App">
-            {displayMode === 'country' ? (
-                <div>
-                    {countries.map((country, index) => (
-                        <div key={index}>
-                            <h3>{country.name}</h3>
-                            <p>Capital: {country.capital}</p>
-                            <p>Language: {country.language}</p>
-                            <img src={country.flag} className='small-flag' alt={`${country.name} flag`} />
-                        </div>
-                    ))}
-                </div>
-            ) : (
-                <textarea value={output} readOnly />
+            {isCorrect === false && (
+              <div className="correct-answer-section">
+                <p>
+                  The correct answer is: <strong>{country.capital}</strong>
+                </p>
+              </div>
             )}
-            <div>
-                <button onClick={getBoredActivity}>
-                    <MdSentimentVeryDissatisfied /> Get Bored Activity
-                </button>
-                <button onClick={getJoke}>
-                    <MdInsertEmoticon /> Get Joke
-                </button>
-                <button onClick={getCountryInfo}>
-                    <MdInsertEmoticon /> Get Country Info
-                </button>
-            </div>
-        </div>
-    );
+
+            {isCorrect !== null && (
+              <div className="feedback-section">
+                {isCorrect ? (
+                  <MdInsertEmoticon color="#00C851" size="2em" />
+                ) : (
+                  <MdSentimentVeryDissatisfied color="#FF3B30" size="2em" />
+                )}
+                <button onClick={loadNewQuestion}>Next</button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <button onClick={getCountryInfo}>Start Quiz</button>
+        )}
+      </div>
+      <div className="score-container">
+        {" "}
+        {/* This div will display the score */}
+        <h3>Score</h3>
+        <p>{score}</p>
+      </div>
+    </div>
+  );
 }
 
 export default App;

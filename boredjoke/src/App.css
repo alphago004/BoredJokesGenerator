@@ -1,5 +1,102 @@
-.small-flag {
-    width: 50px;  /* Or whatever size you want */
+.App {
+    display: flex;
+    align-items: center; /* Vertical centering */
+    flex-direction: column; /* stack children vertically */
+}
+
+.App .small-flag {
+    width: 60px;
     height: auto; /* Keep aspect ratio */
-    margin: 5px;  /* Some margin around the flag */
+    margin: 20%;
+    margin-bottom: 10%;
+    margin-top: 5%;
+}
+
+.score-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    border-left: 1px solid #ddd;
+    width: 100px;
+}
+
+.App button {
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s; /* Enhanced for shadow and translate */
+    box-shadow: none;
+    outline: none; 
+}
+
+.App button:hover {
+    background-color: lightgray;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
+    /*transform: translateY(-2px);  /* Lift effect */
+    color: black;
+    font-weight: bolder; 
+}
+
+.App .question-section {
+    margin-bottom: 20px;
+}
+
+.App .options-section {
+    display: flex;
+    flex-direction: row; 
+    flex-wrap: wrap;  /* Allows options to wrap to next line */
+    gap: 2%;  /* Adjusted the gap */
+}
+
+.App button.option {
+    width: 49%;  /* Adjusted width to fit two buttons per row */
+    padding: 12px 2%;  /* Adjust padding to compensate for width */
+    font-size: 16px;
+    background-color: #2b1d1d;
+    color: #FFF;
+    transition: all 0.3s;
+    box-shadow: none;
+}
+
+.App button.option:hover {
+    background-color: #666;  /* Darker shade for better contrast */
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+    /**transform: translateY(-1px);  /* Lift effect */
+}
+
+.App button.option.selected-option.correct {
+    background-color: #00C851;
+}
+
+.App button.option.selected-option.incorrect {
+    background-color: #FF3B30;
+}
+
+.App .feedback-section {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.App button.option.correct {
+    background-color: #00C851;
+}
+
+.App button.option.incorrect {
+    background-color: #FF3B30;
+}
+
+.correct-answer-section {
+    margin-top: 20px;
+    background-color: #f8d7da; /* Light red background */
+    color: #721c24; /* Dark red text */
+    padding: 10px;
+    border: 1px solid #f5c6cb; /* Light red border */
+    border-radius: 5px;
 }
