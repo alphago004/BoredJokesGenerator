@@ -34,7 +34,7 @@
 }
 
 .App button:hover {
-    background-color: lightgray;
+    background-color: rgb(118, 155, 127);
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
     /*transform: translateY(-2px);  /* Lift effect */
     color: black;
@@ -98,4 +98,41 @@
     padding: 10px;
     border: 1px solid #f5c6cb; /* Light red border */
     border-radius: 5px;
+}
+
+/* Styling the nav links */
+nav a {
+    margin-right: 10px;
+    margin-bottom: 50px;
+    text-decoration: none;
+    color: #3e4752;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: background-color 0.2s ease;
+}
+
+nav a:hover {
+    background-color: #88919b;
+    color: white;
+}
+
+input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+input[type="text"]:focus, input[type="password"]:focus {
+    border-color: #88919b;
+    box-shadow: 0 0 5px rgba(0,123,255,0.5);
+    outline: none;
+}
+
+.input-container {
+    max-width: 300px;
+    margin: 0 auto;
 }

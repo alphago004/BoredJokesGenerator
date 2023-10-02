@@ -2,8 +2,17 @@ const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
 
+const path = require('path');
+const dotenv = require('dotenv');
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
+
+const mongoose = require('mongoose');
+const User = require('./models/User');
+mongoose.connect(process.env.MONGO_CONNECTION_STRING, { useNewUrlParser: true, useUnifiedTopology: true });
+
 const app = express();
 app.use(cors());  // Enable CORS for all routes
+app.use(express.json());  // To parse JSON request bodies
 
 app.get('/bored', async (req, res) => {
     try {
@@ -33,7 +42,7 @@ app.get('/joke', async (req, res) => {
     }
 });
 
-
+//API to fetch the info of the countrie
 app.get('/country', async (req, res) => {
     try {
         const response = await axios.get('https://restcountries.com/v3.1/all');
@@ -67,7 +76,42 @@ app.get('/country', async (req, res) => {
 });
 
 
+// API to register a new user
+app.post('/register', async (req, res) => {
+    const { username, password } = req.body;
 
-app.listen(3001, '0.0.0.0', () => {
+    try {
+        const user = new User({ username, password });
+        await user.save();
+
+        res.status(200).send('User registered!');
+    } catch (error) {
+        res.status(400).send('Error registering user.');
+    }
+});
+
+// API to login a user
+app.post('/login', async (req, res) => {
+    const { username, password } = req.body;
+
+    try {
+        const user = await User.findOne({ username });
+
+        if (!user) return res.status(400).send('Invalid username or password.');
+
+        const isMatch = await user.comparePassword(password);
+
+        if (!isMatch) return res.status(400).send('Invalid username or password.');
+
+        // Ideally, create a session or JWT here
+        res.status(200).send('Logged in successfully!');
+    } catch (error) {
+        res.status(400).send('Error logging in.');
+    }
+});
+
+
+
+app.listen(3001, () => {
     console.log('Server is up on port 3001');
   });
