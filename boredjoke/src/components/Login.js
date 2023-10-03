@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
+import { useNavigate  } from 'react-router-dom';
+import { useUser } from './UserContext'; // Import the context
 
 function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
+    const navigate = useNavigate();
+    const { login } = useUser(); // Use the login function from UserContext.js
 
     const handleLogin = async () => {
         try {
@@ -17,11 +21,22 @@ function Login() {
                     password
                 })
             });
+            
+            console.log('Response:', response);
 
             const data = await response.json();
-            setMessage(data.message);
+            console.log('Received data:', data);
+            
+            if (data.message === "Logged in successfully!") {
+                login();
+                // Redirect to home page
+                console.log('Navigating to home...');  // Debugging statement
+                navigate("/")
+            } else {
+                setMessage(data.message || 'Login failed. Please check your credentials.');
+            }
         } catch (error) {
-            setMessage('Error logging in.');
+            setMessage(`Wrong Username or Password`);
         }
     };
 

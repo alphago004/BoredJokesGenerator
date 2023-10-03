@@ -1,9 +1,12 @@
 import React, { useState } from "react";
+import { useNavigate  } from 'react-router-dom';
+
 
 function Register() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   const handleRegister = async () => {
     try {
@@ -23,16 +26,20 @@ function Register() {
             throw new Error(`Network response was not ok: ${response.statusText}. Details: ${errorText}`);
         }
 
+        //frontend code expects a JSON response from the server after the registration, as evidenced by this line
         const data = await response.json();
-        
+
+        if (response.ok) {
+            console.log ("Hurray")
+            navigate("/login")
+        }
+
         if (data.message) {
             setMessage(data.message);
-        } else {
-            setMessage('Successful registration!');
         }
         
     } catch (error) {
-        setMessage(`Error during registration: ${error.message}`);
+        setMessage(`User already Present. \n Chooose a new user name  `);
     }
 };
 

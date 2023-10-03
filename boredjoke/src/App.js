@@ -1,16 +1,18 @@
 import "./App.css";
 
 import React, { useState } from "react";
-import { BrowserRouter as Router, Link, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Link, Route, Routes, useNavigate  } from "react-router-dom";
 import { MdSentimentVeryDissatisfied, MdInsertEmoticon } from "react-icons/md"; // Importing Icons
 import Login from "./components/Login"; // Import the Login component
 import Register from "./components/Register"; // Import the Register component
+import { UserProvider, useUser } from "./components/UserContext"; // Import the provider and hook
 
 function App() {
   const [country, setCountry] = useState(null);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
   const [score, setScore] = useState(0);
+  
 
   const currentScore = score;
   const highestScore = localStorage.getItem("highestScore")
@@ -59,15 +61,10 @@ function App() {
   };
 
   return (
+    <UserProvider>
     <Router>
       <div className="App">
-        {/* Navigation Bar */}
-        <nav>
-          <Link to="/login">Login</Link>
-          <Link to="/register">Register</Link>
-          <Link to="/">Home</Link>
-        </nav>
-
+      <NavBar />
         {/* Routing Logic */}
         <Routes>
           <Route path="/login" element={<Login />} />
@@ -157,6 +154,31 @@ function App() {
         </Routes>
       </div>
     </Router>
+    </UserProvider>
+  );
+}
+
+function NavBar() {
+  const { isLoggedIn, logout } = useUser(); 
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+      logout();  // Set isLoggedIn to false via context
+      navigate("/login");  // Navigate to login page
+  };
+
+  return (
+      <nav>
+          {!isLoggedIn ? (
+              <>
+                  <Link to="/login">Login</Link>
+                  <Link to="/register">Register</Link>
+              </>
+          ) : (
+              <button onClick={handleLogout} className="logout">Logout</button>
+          )}
+          <Link to="/">Home</Link>
+      </nav>
   );
 }
 

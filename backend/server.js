@@ -84,9 +84,10 @@ app.post('/register', async (req, res) => {
         const user = new User({ username, password });
         await user.save();
 
-        res.status(200).send('User registered!');
+        res.status(200).json({ message: 'User registered!' });
+
     } catch (error) {
-        res.status(400).send('Error registering user.');
+        res.status(400).json({message: 'Error registering user.'});
     }
 });
 
@@ -100,13 +101,12 @@ app.post('/login', async (req, res) => {
         if (!user) return res.status(400).send('Invalid username or password.');
 
         const isMatch = await user.comparePassword(password);
-
-        if (!isMatch) return res.status(400).send('Invalid username or password.');
+        if (!isMatch) return res.status(400).json({message: 'Invalid username or password.'});
 
         // Ideally, create a session or JWT here
-        res.status(200).send('Logged in successfully!');
+        res.status(200).json({message: 'Logged in successfully!'});
     } catch (error) {
-        res.status(400).send('Error logging in.');
+        res.status(400).json({message: 'Error logging in.'});
     }
 });
 
