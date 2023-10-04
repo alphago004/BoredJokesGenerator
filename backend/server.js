@@ -39,6 +39,7 @@ app.get('/joke', async (req, res) => {
         
     } catch (error) {
         res.status(500).json({ error: "Hold on!! Take a breath!" });
+        console.log("New deployment added")
     }
 });
 
