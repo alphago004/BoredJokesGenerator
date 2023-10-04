@@ -38,7 +38,7 @@ jobs:
     # Add your tests for frontend and backend here if needed
     
     - name: Deploy to Azure Web App
-      uses: azure/webapps-deploy@v4
+      uses: azure/webapps-deploy@v2
       with:
         app-name: 'YourAppName' # Replace with your Azure App Name
         slot-name: 'production' 
