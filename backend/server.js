@@ -94,7 +94,7 @@ app.post('/register', async (req, res) => {
 
 // API to login a user
 app.post('/login', async (req, res) => {
-    const { username, password } = req.body;
+    const { username, password } = req.body; // Accessing the request body properties
 
     try {
         const user = await User.findOne({ username });
